@@ -17,6 +17,7 @@
 package com.android.internal.telephony;
 
 import android.content.ContentValues;
+
 import com.android.internal.telephony.uicc.AdnRecord;
 
 /**
@@ -94,6 +95,22 @@ interface IIccPhoneBook {
             String oldTag, String oldPhoneNumber,
             String newTag, String newPhoneNumber,
             String pin2);
+
+    /**
+     * Replace oldAdn with newAdn in ADN-like record in EF
+     *
+     * getAdnRecordsInEf must be called at least once before this function,
+     * otherwise an error will be returned
+     *
+     * @param subId user preferred subId
+     * @param efid must be one among EF_ADN, EF_FDN, and EF_SDN
+     * @param values including ADN,EMAIL,ANR to be updated
+     * @param pin2 required to update EF_FDN, otherwise must be null
+     * @return true for success
+     */
+    boolean updateAdnRecordsWithContentValuesInEfBySearchUsingSubId(int subId,
+            int efid, in ContentValues values, String pin2);
+
     /**
      * Update an ADN-like EF record by record index
      *
@@ -112,21 +129,6 @@ interface IIccPhoneBook {
     boolean updateAdnRecordsInEfByIndex(int efid, String newTag,
             String newPhoneNumber, int index,
             String pin2);
-
-    /**
-     * Replace oldAdn with newAdn in ADN-like record in EF
-     *
-     * getAdnRecordsInEf must be called at least once before this function,
-     * otherwise an error will be returned
-     *
-     * @param subId user preferred subId
-     * @param efid must be one among EF_ADN, EF_FDN, and EF_SDN
-     * @param values including ADN,EMAIL,ANR to be updated
-     * @param pin2 required to update EF_FDN, otherwise must be null
-     * @return true for success
-     */
-    boolean updateAdnRecordsWithContentValuesInEfBySearchUsingSubId(int subId,
-            int efid, in ContentValues values, String pin2);
 
     /**
      * Update an ADN-like EF record by record index
@@ -207,4 +209,5 @@ interface IIccPhoneBook {
      *            capacity[9]  is the max length of anr
      */
     int[] getAdnRecordsCapacityForSubscriber(int subId);
+
 }

@@ -273,7 +273,11 @@ public class VendorPhoneSwitcher extends PhoneSwitcher {
         for (int i = 0; i < mActiveModemCount; i++) {
             int sub = mSubscriptionController.getSubIdUsingPhoneId(i);
 
-            if (SubscriptionManager.isValidSubscriptionId(sub)) hasAnyActiveSubscription = true;
+            if (SubscriptionManager.isValidSubscriptionId(sub) && isSimReady(i)) {
+                hasAnyActiveSubscription = true;
+            } else {
+		log("slot" + i + " not a valid subscription");
+            }
 
             if (sub != mPhoneSubscriptions[i]) {
                 sb.append(" phone[").append(i).append("] ").append(mPhoneSubscriptions[i]);
@@ -428,7 +432,8 @@ public class VendorPhoneSwitcher extends PhoneSwitcher {
         boolean isUiccApplicationEnabled = true;
         // FIXME get the SubscriptionManager.UICC_APPLICATIONS_ENABLED value and use it here
         log("isUiccProvisioned: status= " + isUiccApplicationEnabled + " phoneid=" + phoneId);
-        return mSubscriptionController.isActiveSubId(mPhoneSubscriptions[phoneId]) && isUiccApplicationEnabled; 
+        return mSubscriptionController.isActiveSubId(mPhoneSubscriptions[phoneId]) &&
+                isUiccApplicationEnabled;
     }
 
     @Override
